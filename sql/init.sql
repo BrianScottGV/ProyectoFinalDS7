@@ -1,4 +1,4 @@
--- Seleccionar la base de datos (opcional si ya se conecta a ella directamente)
+ -- Seleccionar la base de datos (opcional si ya se conecta a ella directamente)
 USE recomendaciones_db;
 
 -- Tabla de usuarios

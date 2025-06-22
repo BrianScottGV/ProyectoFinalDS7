@@ -1,6 +1,5 @@
 <?php
     include "config.php";
-
     class BaseDeDatos {
 
         public static function ConectarSinDB() {

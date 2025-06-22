@@ -1,5 +1,6 @@
 <?php
 
+
 //DEFINICION DE CONSTANTES DE LA WEB
 define('DB_HOST','localhost');
 define('DB_NAME','recomendaciones_db');
