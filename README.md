@@ -2,6 +2,45 @@
 Este repositorio contiene el proyecto final del curso de desarrollo 7
 
 
+✅ OPCIÓN 1: Cerrar el issue desde GitHub Web
+🔧 Paso a paso:
+Entra a tu repositorio en GitHub.
+
+Haz clic en la pestaña Issues.
+
+Busca el Issue que completaste.
+
+Haz clic en el título del Issue para abrirlo.
+
+Verifica que tu trabajo esté hecho (puedes comentar algo como:
+
+✅ Implementado y probado. Listo para revisión).
+
+Haz clic en el botón Close issue (abajo a la izquierda del botón verde).
+
+
+✅ OPCIÓN 2: Cerrar un Issue automáticamente desde el commit (profesional)
+Cuando haces commit, puedes escribir:
+git commit -m "feat: agregar formulario de preferencias – closes #8"
+
+🔁 Al hacer git push, GitHub cerrará automáticamente el Issue #8 y lo marcará como completado en el milestone asociado.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 🚀 Guía para trabajar con el repositorio (Workflow del equipo)
 Este documento explica los pasos que debes seguir cada vez que trabajes con el proyecto, para evitar conflictos y mantener todo sincronizado.
 
