@@ -1,9 +1,6 @@
 Modelo de la base de datos
 
--- Crear base de datos
 CREATE DATABASE IF NOT EXISTS recomendaciones_db
-CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;
 
 USE recomendaciones_db;
 
@@ -17,26 +14,41 @@ CREATE TABLE IF NOT EXISTS usuarios (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de contenido (películas/series)
+-- Tabla de géneros
+CREATE TABLE IF NOT EXISTS generos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Tabla de contenido (películas o series)
 CREATE TABLE IF NOT EXISTS contenido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    genero VARCHAR(100),
     tipo ENUM('pelicula', 'serie') NOT NULL,
     fecha_lanzamiento DATE,
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de preferencias del usuario
+-- Relación N:M entre contenido y géneros
+CREATE TABLE IF NOT EXISTS contenido_generos (
+    contenido_id INT NOT NULL,
+    genero_id INT NOT NULL,
+    PRIMARY KEY (contenido_id, genero_id),
+    FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE,
+    FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
+);
+
+-- Tabla de preferencias del usuario (géneros favoritos)
 CREATE TABLE IF NOT EXISTS preferencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
-    genero VARCHAR(100) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    genero_id INT NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
 );
 
--- Tabla de historial (contenido visto)
+-- Tabla de historial (contenido visto por usuario)
 CREATE TABLE IF NOT EXISTS historial (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
