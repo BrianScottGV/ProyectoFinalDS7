@@ -1,0 +1,47 @@
+Modelo de la base de datos
+
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS recomendaciones_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE recomendaciones_db;
+
+-- Tabla de usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('usuario', 'admin') DEFAULT 'usuario',
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de contenido (películas/series)
+CREATE TABLE IF NOT EXISTS contenido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    genero VARCHAR(100),
+    tipo ENUM('pelicula', 'serie') NOT NULL,
+    fecha_lanzamiento DATE,
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de preferencias del usuario
+CREATE TABLE IF NOT EXISTS preferencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    genero VARCHAR(100) NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- Tabla de historial (contenido visto)
+CREATE TABLE IF NOT EXISTS historial (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    contenido_id INT NOT NULL,
+    fecha_visto DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE
+);
