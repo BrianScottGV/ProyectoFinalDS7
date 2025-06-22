@@ -1,6 +1,6 @@
 # ProyectoFinalDS7
 Este repositorio contiene el proyecto final del curso de desarrollo 7
-
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ OPCIÓN 1: Cerrar el issue desde GitHub Web
 🔧 Paso a paso:
@@ -26,7 +26,7 @@ git commit -m "feat: agregar formulario de preferencias – closes #8"
 🔁 Al hacer git push, GitHub cerrará automáticamente el Issue #8 y lo marcará como completado en el milestone asociado.
 
 
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
