@@ -1,7 +1,5 @@
- -- Seleccionar la base de datos (opcional si ya se conecta a ella directamente)
 USE recomendaciones_db;
 
--- Tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -11,13 +9,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de géneros
 CREATE TABLE IF NOT EXISTS generos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
--- Tabla de contenido (películas o series)
 CREATE TABLE IF NOT EXISTS contenido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
@@ -27,7 +23,6 @@ CREATE TABLE IF NOT EXISTS contenido (
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Relación N:M entre contenido y géneros
 CREATE TABLE IF NOT EXISTS contenido_generos (
     contenido_id INT NOT NULL,
     genero_id INT NOT NULL,
@@ -36,7 +31,6 @@ CREATE TABLE IF NOT EXISTS contenido_generos (
     FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
 );
 
--- Tabla de preferencias del usuario (géneros favoritos)
 CREATE TABLE IF NOT EXISTS preferencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -45,7 +39,6 @@ CREATE TABLE IF NOT EXISTS preferencias (
     FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
 );
 
--- Tabla de historial (contenido visto por usuario)
 CREATE TABLE IF NOT EXISTS historial (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,

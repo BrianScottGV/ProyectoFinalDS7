@@ -1,11 +1,9 @@
 <?php
-
-
-//DEFINICION DE CONSTANTES DE LA WEB
-define('DB_HOST','localhost');
-define('DB_NAME','recomendaciones_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('BASE_URL', '');
-
+class Config {
+    public const DB_HOST = 'localhost';
+    public const DB_NAME = 'recomendaciones_db';
+    public const DB_USER = 'root';
+    public const DB_PASS = '';
+    public const BASE_URL = 'http://localhost/PROYECTOFINALDS7/';
+}
 ?>
