@@ -1,42 +1,25 @@
 <?php
-    include "config.php";
-    class BaseDeDatos {
+require_once 'Config.php';
 
-        public static function ConectarSinDB() {
-            try {
-                $conexion = new PDO("mysql:host=" . DB_HOST, DB_USER, DB_PASS);
-                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                return $conexion;
-            } catch (PDOException $e) {
-                die("Error de conexión (Sin DB): " . $e->getMessage());
-            }
-        }
+class Database {
+    private static ?PDO $connection = null;
 
-        public static function Conectar() {
-            try {
-                $conexion = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
-                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                return $conexion;
-            } catch (PDOException $e) {
-                die("Error de conexión (Con DB): " . $e->getMessage());
-            }
-        }
+    public static function getConnection(): PDO {
+        if (self::$connection === null) {
+            $dsn = "mysql:host=" . Config::DB_HOST . ";charset=utf8mb4";
+            self::$connection = new PDO($dsn, Config::DB_USER, Config::DB_PASS);
+            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        public static function CrearDB() {
-            try {
-                // CREAR BASE DE DATOS SI NO EXISTE
-                $conexionSinDB = self::ConectarSinDB();
-                $conexionSinDB->exec("CREATE DATABASE IF NOT EXISTS " . DB_NAME . " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
-
-                $conexion = self::Conectar();
-
-                // EJECUTA EL SCRIPT init.sql
+            // Crear base si no existe
+            $dbName = Config::DB_NAME;
+            $check = self::$connection->query("SHOW DATABASES LIKE '$dbName'");
+            if ($check->rowCount() == 0) {
                 $sql = file_get_contents(__DIR__ . '/../sql/init.sql');
-                $conexion->exec($sql);
-
-            } catch (PDOException $e) {
-                die("Error al crear la base de datos: " . $e->getMessage());
+                self::$connection->exec($sql);
             }
+
+            self::$connection->query("USE $dbName");
         }
+        return self::$connection;
     }
-?>
+}
