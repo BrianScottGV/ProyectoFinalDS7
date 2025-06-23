@@ -1,93 +1,42 @@
-Modelo de la base de datos
-
-
 <?php
     include "config.php";
+    class BaseDeDatos {
 
-    class BaseDeDatos extends Funciones {
-
-            public static function ConectarSinDB() {
-                $conexion = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8", DB_USER, DB_PASS);
-                $conexion->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-                return $conexion;
-            }
-
-            // Conecta a la base de datos ya creada
-            public static function Conectar() {
-                $conexion = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8", DB_USER, DB_PASS);
+        public static function ConectarSinDB() {
+            try {
+                $conexion = new PDO("mysql:host=" . DB_HOST, DB_USER, DB_PASS);
                 $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 return $conexion;
+            } catch (PDOException $e) {
+                die("Error de conexión (Sin DB): " . $e->getMessage());
             }
+        }
 
-            public static function CrearDB() {
-                // SI NO EXISTE LA BASE DE DATOS
-                $dbconect = self::ConectarSinDB();
-                $dbconect->exec("CREATE DATABASE IF NOT EXISTS recomendaciones_db");
+        public static function Conectar() {
+            try {
+                $conexion = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                return $conexion;
+            } catch (PDOException $e) {
+                die("Error de conexión (Con DB): " . $e->getMessage());
+            }
+        }
 
-                //CONECTAR SI YA EXISTE
+        public static function CrearDB() {
+            try {
+                // CREAR BASE DE DATOS SI NO EXISTE
+                $conexionSinDB = self::ConectarSinDB();
+                $conexionSinDB->exec("CREATE DATABASE IF NOT EXISTS " . DB_NAME . " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+
                 $conexion = self::Conectar();
 
-                $conexion->exec("
-                    CHARACTER SET utf8mb4
-                    COLLATE utf8mb4_unicode_ci;
+                // EJECUTA EL SCRIPT init.sql
+                $sql = file_get_contents(__DIR__ . '/../sql/init.sql');
+                $conexion->exec($sql);
 
-                    USE recomendaciones_db;
-
-                    -- Tabla de usuarios
-                    CREATE TABLE IF NOT EXISTS usuarios (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        nombre VARCHAR(100) NOT NULL,
-                        email VARCHAR(100) NOT NULL UNIQUE,
-                        password VARCHAR(255) NOT NULL,
-                        rol ENUM('usuario', 'admin') DEFAULT 'usuario',
-                        fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
-                    );
-
-                    -- Tabla de géneros
-                    CREATE TABLE IF NOT EXISTS generos (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        nombre VARCHAR(50) NOT NULL UNIQUE
-                    );
-
-                    -- Tabla de contenido (películas o series)
-                    CREATE TABLE IF NOT EXISTS contenido (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        titulo VARCHAR(255) NOT NULL,
-                        descripcion TEXT,
-                        tipo ENUM('pelicula', 'serie') NOT NULL,
-                        fecha_lanzamiento DATE,
-                        fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-                    );
-
-                    -- Relación N:M entre contenido y géneros
-                    CREATE TABLE IF NOT EXISTS contenido_generos (
-                        contenido_id INT NOT NULL,
-                        genero_id INT NOT NULL,
-                        PRIMARY KEY (contenido_id, genero_id),
-                        FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE,
-                        FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
-                    );
-
-                    -- Tabla de preferencias del usuario (géneros favoritos)
-                    CREATE TABLE IF NOT EXISTS preferencias (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        usuario_id INT NOT NULL,
-                        genero_id INT NOT NULL,
-                        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-                        FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
-                    );
-
-                    -- Tabla de historial (contenido visto por usuario)
-                    CREATE TABLE IF NOT EXISTS historial (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        usuario_id INT NOT NULL,
-                        contenido_id INT NOT NULL,
-                        fecha_visto DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-                        FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE
-                    );
-                ");
+            } catch (PDOException $e) {
+                die("Error al crear la base de datos: " . $e->getMessage());
             }
-
         }
+    }
 ?>
