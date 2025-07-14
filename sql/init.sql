@@ -1,49 +1,49 @@
 USE recomendaciones_db;
 
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    rol ENUM('usuario', 'admin') DEFAULT 'usuario',
-    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+    role ENUM('usuario', 'admin') DEFAULT 'usuario',
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS generos (
+CREATE TABLE IF NOT EXISTS genres (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL UNIQUE
+    name VARCHAR(50) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS contenido (
+CREATE TABLE IF NOT EXISTS content (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    descripcion TEXT,
-    tipo ENUM('pelicula', 'serie') NOT NULL,
-    fecha_lanzamiento DATE,
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    type ENUM('pelicula', 'serie') NOT NULL,
+    release_date DATE,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS contenido_generos (
-    contenido_id INT NOT NULL,
-    genero_id INT NOT NULL,
-    PRIMARY KEY (contenido_id, genero_id),
-    FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE,
-    FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS content_genres (
+    content_id INT NOT NULL,
+    genre_id INT NOT NULL,
+    PRIMARY KEY (content_id, genre_id),
+    FOREIGN KEY (content_id) REFERENCES content(id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS preferencias (
+CREATE TABLE IF NOT EXISTS user_preferences (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    genero_id INT NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (genero_id) REFERENCES generos(id) ON DELETE CASCADE
+    user_id INT NOT NULL,
+    genre_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS historial (
+CREATE TABLE IF NOT EXISTS history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    contenido_id INT NOT NULL,
-    fecha_visto DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (contenido_id) REFERENCES contenido(id) ON DELETE CASCADE
+    user_id INT NOT NULL,
+    content_id INT NOT NULL,
+    view_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (content_id) REFERENCES content(id) ON DELETE CASCADE
 );

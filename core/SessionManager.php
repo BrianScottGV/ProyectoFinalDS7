@@ -4,7 +4,7 @@ require_once 'Config.php';
 class SessionManager {
     private const TIMEOUT = 1800;
 
-    public static function start(): void {
+    public static function startSession(): void {
         if (session_status() === PHP_SESSION_NONE) {
             ini_set('session.use_only_cookies', 1);
             ini_set('session.cookie_httponly', 1);
@@ -25,5 +25,23 @@ class SessionManager {
             session_regenerate_id(true);
             $_SESSION['CREATED'] = time();
         }
+    }
+
+    public static function isLoggedIn(): bool {
+        return isset($_SESSION['user_id']);
+    }
+
+    public static function setUserId(int $userId): void {
+        $_SESSION['user_id'] = $userId;
+    }
+
+    public static function getUserId(): ?int {
+        return $_SESSION['user_id'] ?? null;
+    }
+
+    public static function logout(): void {
+        session_unset();
+        session_destroy();
+        $_SESSION = array();
     }
 }

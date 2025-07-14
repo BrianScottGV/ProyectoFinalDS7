@@ -1,6 +1,6 @@
 <?php
 class Security {
-    public static function sanitize(string $input): string {
+    public static function sanitizeInput(string $input): string {
         return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
     }
 
